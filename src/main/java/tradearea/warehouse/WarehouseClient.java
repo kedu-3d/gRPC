@@ -1,26 +1,19 @@
 package tradearea.warehouse;
 
-import helloworld.GreeterGrpc;
-import helloworld.Hello;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.StatusRuntimeException;
 import tradearea.Warehouse;
 import tradearea.WarehouseServiceGrpc;
 
-
-public class HelloWorldClient {
-
+public class WarehouseClient {
     private final ManagedChannel channel;
+    private final WarehouseServiceGrpc.WarehouseServiceBlockingStub stub;
 
-    private WarehouseServiceGrpc.WarehouseServiceBlockingStub stub;
-
-
-    public HelloWorldClient(String host, int port) {
-        channel = ManagedChannelBuilder.forAddress(host, port)
+    public WarehouseClient(String host, int port) {
+        this.channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext()
                 .build();
-        stub = WarehouseServiceGrpc.newBlockingStub(channel);
+        this.stub = WarehouseServiceGrpc.newBlockingStub(channel);
     }
 
     public void shutdown() throws InterruptedException {
@@ -38,10 +31,11 @@ public class HelloWorldClient {
         System.out.println("Warehouse City: " + response.getWarehouseCity());
         System.out.println("Warehouse Address: " + response.getAddress());
         System.out.println("Timestamp: " + response.getTimestamp());
+        System.out.println("Product 1: " + response.getProductData(0));
     }
 
     public static void main(String[] args) throws Exception {
-        HelloWorldClient client = new HelloWorldClient("localhost", 50051);
+        WarehouseClient client = new WarehouseClient("localhost", 50051);
         try {
             String user = "Warehouse";
             client.greet(user);

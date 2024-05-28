@@ -10,28 +10,22 @@ buildscript {
     }
 }
 
-// Note: for IntelliJ IDE to mark the generated files as source.
+repositories {
+    mavenCentral()
+}
+
 sourceSets {
-    src {
-        main {
-            java {
-                srcDirs 'build/generated/source/proto/main/grpc'
-                srcDirs 'build/generated/source/proto/main/java'
-            }
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/java'
         }
     }
 }
 
-// Note: Make sure to modify the gRPC version if it is no
-// longer compatible w/ the latest gradle version.
-//
-// Visit https://mvnrepository.com/artifact/io.grpc/grpc-protobuf
 def grpcVersion = '1.29.0'
 
 dependencies {
-    repositories {
-        mavenCentral()
-    }
     implementation "io.grpc:grpc-netty:${grpcVersion}"
     implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"
@@ -39,7 +33,6 @@ dependencies {
 
     compileOnly group: "javax.annotation", name: "javax.annotation-api", version: "1.3.2"
     compileOnly group: "org.jetbrains", name: "annotations", version: "13.0"
-
 }
 
 protobuf {
@@ -53,8 +46,21 @@ protobuf {
         }
     }
     generateProtoTasks {
-        all()*.plugins {
-            grpc {}
+        all().each { task ->
+            task.plugins {
+                grpc {}
+            }
         }
     }
+}
+
+// Set JVM arguments for Gradle tasks
+tasks.withType(JavaCompile) {
+    options.fork = true
+    options.forkOptions.jvmArgs << "-Xmx4096m"
+}
+
+tasks.withType(Test) {
+    minHeapSize = "512m"
+    maxHeapSize = "4096m"
 }
