@@ -11,7 +11,7 @@ public class WarehouseServer {
     public WarehouseServer(int port) {
         this.port = port;
         this.server = ServerBuilder.forPort(port)
-                .addService(new WarehouseServiceImpl())  // ensure this class is properly implemented
+                .addService(new WarehouseServiceImpl())
                 .build();
     }
 
