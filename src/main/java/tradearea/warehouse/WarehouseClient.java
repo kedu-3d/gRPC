@@ -21,10 +21,12 @@ public class WarehouseClient {
     }
 
     public void greet(String name) {
+
+        System.out.println("Hello " + name + "! \nHere is your warehouse data:");
+
         Warehouse.WarehouseRequest request = Warehouse.WarehouseRequest.newBuilder().setWarehouseID("001").build();
         Warehouse.WarehouseData response = stub.getWarehouseData(request);
 
-        System.out.println("Response from Warehouse gRPC server:");
         System.out.println("Warehouse ID: " + response.getWarehouseID());
         System.out.println("Warehouse Name: " + response.getWarehouseName());
         System.out.println("Warehouse Country: " + response.getWarehouseCountry());
@@ -37,7 +39,7 @@ public class WarehouseClient {
     public static void main(String[] args) throws Exception {
         WarehouseClient client = new WarehouseClient("localhost", 50051);
         try {
-            String user = "Warehouse";
+            String user = "Kevin";
             client.greet(user);
         } finally {
             client.shutdown();
